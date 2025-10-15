@@ -2,12 +2,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Empleado } from './empleado';
+import { Empleado } from '../models/empleado';
 
 @Injectable({ providedIn: 'root' })
 export class EmpleadoService {
   private URL_API = 'http://localhost:3000/api/empleados';
-
   empleados: Empleado[] = [];
   selectedEmpleado: Empleado = { nombre: '', cargo: '', departamento: '', sueldo: 0 };
 

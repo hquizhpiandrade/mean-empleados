@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { EmpleadoService } from '../models/empleado.service'; // ajusta si moviste el service
+import { EmpleadoService } from '../services/empleado.service'; 
 import { Empleado } from '../models/empleado';
 
 @Component({
@@ -18,17 +18,24 @@ export class EmpleadoComponent implements OnInit {
 
   constructor(public empleadoService: EmpleadoService) {}
 
-  ngOnInit(): void { this.getEmpleados(); }
+  ngOnInit(): void { 
+    this.getEmpleados(); 
+  }
 
   getEmpleados(): void {
     this.loading = true;
     this.empleadoService.getEmpleados().subscribe({
-      next: (res: Empleado[]) => { this.empleadoService.empleados = res; this.loading = false; },
-      error: (err: any) => { console.error(err); this.loading = false; }
+      next: (res: Empleado[]) => { 
+        this.empleadoService.empleados = res; 
+        this.loading = false; 
+      },
+      error: (err: any) => { 
+        console.error(err); 
+        this.loading = false; 
+      }
     });
   }
 
-  // Cargar datos en el form para editar
   editEmpleado(e: Empleado): void {
     this.empleadoService.selectedEmpleado = { ...e };
     this.editingId = e._id ?? null;
@@ -39,16 +46,22 @@ export class EmpleadoComponent implements OnInit {
   submit(form: NgForm): void {
     if (form.invalid) return;
     const data = form.value as Empleado;
-
+    
     if (this.editingId) {
       this.empleadoService.updateEmpleado(this.editingId, data).subscribe({
-        next: () => { this.resetForm(form); this.getEmpleados(); },
-        error: (err) => console.error(err)
+        next: () => { 
+          this.resetForm(form); 
+          this.getEmpleados(); 
+        },
+        error: (err: any) => console.error(err) 
       });
     } else {
       this.empleadoService.createEmpleado(data).subscribe({
-        next: () => { this.resetForm(form); this.getEmpleados(); },
-        error: (err) => console.error(err)
+        next: () => { 
+          this.resetForm(form); 
+          this.getEmpleados(); 
+        },
+        error: (err: any) => console.error(err) 
       });
     }
   }
@@ -57,16 +70,22 @@ export class EmpleadoComponent implements OnInit {
   deleteEmpleado(id?: string): void {
     if (!id) return;
     if (!confirm('¿Seguro que deseas eliminar este empleado?')) return;
+    
     this.empleadoService.deleteEmpleado(id).subscribe({
       next: () => this.getEmpleados(),
-      error: (err) => console.error(err)
+      error: (err: any) => console.error(err) 
     });
   }
 
   // Limpiar
   resetForm(form: NgForm): void {
     this.editingId = null;
-    this.empleadoService.selectedEmpleado = { nombre: '', cargo: '', departamento: '', sueldo: 0 };
+    this.empleadoService.selectedEmpleado = { 
+      nombre: '', 
+      cargo: '', 
+      departamento: '', 
+      sueldo: 0 
+    };
     form.resetForm(this.empleadoService.selectedEmpleado);
   }
 }
